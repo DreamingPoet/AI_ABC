@@ -7,7 +7,7 @@ import ollama
 
 # # 使用配置好的地址进行嵌入
 res = ollama.embeddings(model='nomic-embed-text', prompt='The sky is blue because of rayleigh scattering')
-print(res)
+print(len(res.embedding))
 
 
 

@@ -1,0 +1,8 @@
+langchain==0.3.24
+langchain-community==0.3.22
+langchain-ollama==0.3.2
+matplotlib==3.10.1
+ollama==0.4.8
+pymilvus==2.5.7
+PyMuPDF==1.25.5
+requests==2.32.3
