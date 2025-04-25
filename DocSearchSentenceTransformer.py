@@ -2,7 +2,7 @@
 
 import os
 from typing import List, Dict, Any
-from langchain_ollama import OllamaEmbeddings
+from sentence_transformers import SentenceTransformer
 from pymilvus import connections, Collection, utility
 import fitz  # PyMuPDF
 
@@ -11,11 +11,8 @@ class DocSearch:
         # 初始化 Milvus 连接
         connections.connect(host=milvus_host, port=milvus_port)
         
-        # 初始化 Ollama embeddings
-        self.embeddings = OllamaEmbeddings(
-            model="nomic-embed-text",
-            base_url="http://192.168.0.245:11434"
-        )
+        # 初始化 SentenceTransformer embeddings
+        self.embeddings = SentenceTransformer('moka-ai/m3e-base')
         
         # 获取集合
         self.collection_name = "doc_embeddings"
@@ -41,9 +38,13 @@ class DocSearch:
             - score: 相似度分数
         """
         # 将查询文本转换为向量
-        query_embedding = self.embeddings.embed_query(query)
+        # query_embedding = self.embeddings.embed_query(query)
+        
+        # 生成嵌入向量
+        query_embedding = self.embeddings.encode(query)
+        
         # 检查向量维度
-        print(f"向量维度: {len(query_embedding)}")
+        print(f"向量维度: {query_embedding}")
 
         # 准备搜索参数
         # 较低的nprobe值：搜索速度更快，但可能降低召回率(recall)
@@ -117,7 +118,11 @@ if __name__ == "__main__":
     doc_search = DocSearch()
     
     # 执行搜索
-    query = "基金项目"
+    query = '''在优化现有牵引供电设备运维手段基础上，
+深入开展朔黄铁路牵引供电运维智能化技术顶层
+框架及关键技术研究，以数据为抓手、以数据为
+驱动，形成了完整的适用于朔黄铁路牵引供电设
+备智能运维技术架构'''
     results = doc_search.search(query)
     
     # 打印结果
